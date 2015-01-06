@@ -1,4 +1,4 @@
-package aiti.m1403l.group.utils;
+package aiti.m1403l.group1.utils;
 
 public class Defines {
 	
