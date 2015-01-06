@@ -2,14 +2,14 @@ package aiti.m1403l.group1.data.entity;
 
 public class Film {
 	
-	int id;
-	String name;
-	int year;
-	String image;
-	String youtubeId;
-	int viewCount;
-	int like;
-	String duration;
+	private int id;
+	private String name;
+	private int year;
+	private String image;
+	private String youtubeId;
+	private int viewCount;
+	private int like;
+	private String duration;
 	
 	public Film() {
 	}
