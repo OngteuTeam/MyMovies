@@ -1,7 +1,7 @@
-package aiti.m1403l.group1.data.entity;
+package aiti.m1403l.group1.data.model;
 
 public class Film {
-	
+
 	private int id;
 	private String name;
 	private int year;
@@ -10,12 +10,13 @@ public class Film {
 	private int viewCount;
 	private int like;
 	private String duration;
-	
+	private int[] categories;
+
 	public Film() {
 	}
-
+	
 	public Film(int id, String name, int year, String image, String youtubeId,
-			int viewCount, int like, String duration) {
+			int viewCount, int like, String duration, int[] categories) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -25,6 +26,7 @@ public class Film {
 		this.viewCount = viewCount;
 		this.like = like;
 		this.duration = duration;
+		this.categories = categories;
 	}
 
 	public int getId() {
@@ -91,6 +93,14 @@ public class Film {
 		this.duration = duration;
 	}
 
+	public int[] getCategories() {
+		return categories;
+	}
+
+	public void setCategories(int[] categories) {
+		this.categories = categories;
+	}
+
 	@Override
 	public String toString() {
 		return "Film [id=" + id + ", name=" + name + ", year=" + year
@@ -98,7 +108,5 @@ public class Film {
 				+ ", viewCount=" + viewCount + ", like=" + like + ", duration="
 				+ duration + "]";
 	}
-	
-	
-	
+
 }

@@ -1,4 +1,4 @@
-package aiti.m1403l.group1.data.entity;
+package aiti.m1403l.group1.data.model;
 
 public class Category {
 	/*
