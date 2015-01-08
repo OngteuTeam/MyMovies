@@ -8,13 +8,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class CategoryORM {
 
 	public static final String TABLE_NAME = "Category";
-	static ContentValues values = new ContentValues();
+
 	public static final String COL_ID = "id";
-	static Category category = new Category();
 	public static final String COL_NAME = "name";
 
 	/*
@@ -32,18 +32,24 @@ public class CategoryORM {
 	 * @Decription: Function for Category
 	 */
 
-	public static long addCategory(Context context) {
+	public static long addCategory(Context context, Category category) {
 		long result = -1;
 
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 
 		try {
-			convertToContentValues(category);
-
-			result = mDB.insertOrThrow(TABLE_NAME, null, values);
+			if (mDB != null) {
+				ContentValues values = CategoryORM
+						.convertToContentValues(category);
+				result = mDB.insertOrThrow(TABLE_NAME, null, values);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("SQL_ADD_Category =>", "Failed: " + e.getStackTrace());
+		} finally {
+			if (mDB != null) {
+				mDB.close();
+			}
 		}
 
 		return result;
@@ -58,27 +64,43 @@ public class CategoryORM {
 
 	private static Category convertToCategory(Cursor c) {
 		Category cate = new Category();
-		cate.setId(c.getInt(0));
-		cate.setName(c.getString(1));
+		cate.setId(c.getInt(c.getColumnIndex(COL_ID)));
+		cate.setName(c.getString(c.getColumnIndex(COL_NAME)));
 		return cate;
 	}
 
+	public static Category getCategoryById(Context context, int id){
+		Category cate = new Category();
+		
+		DatabaseWrapper dw = new DatabaseWrapper(context);
+		SQLiteDatabase mDB = dw.getWritableDatabase();
+		
+		if (mDB != null) {
+			Cursor c = mDB.rawQuery("SELECT * FROM " + CategoryORM.TABLE_NAME + " WHERE " + CategoryORM. COL_ID + " = " + id, null);
+			c.moveToFirst();
+			cate = CategoryORM.convertToCategory(c);
+			mDB.close();
+		}
+		return cate;
+	}
+	
 	public static ArrayList<Category> getListCategory(Context context) {
 		ArrayList<Category> list = new ArrayList<Category>();
 
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		Cursor c = null;
-		c = mDB.query(TABLE_NAME, null, null, null, null, null, null);
-		if (c.moveToFirst()) {
-			do {
 
-				convertToCategory(c);
-
-				list.add(category);
-			} while (c.moveToNext());
+		if (mDB != null) {
+			Cursor c = mDB.query(TABLE_NAME, null, null, null, null, null, null);
+			if (c.moveToFirst()) {
+				do {
+					Category category = convertToCategory(c);
+					list.add(category);
+				} while (c.moveToNext());
+			}
+			mDB.close();
 		}
-
+		
 		return list;
 	}
 

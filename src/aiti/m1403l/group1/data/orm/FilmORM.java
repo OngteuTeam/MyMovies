@@ -9,10 +9,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class FilmORM {
-	static ContentValues values = new ContentValues();
-	static Film film = new Film();
+
 	public static final String TABLE_NAME = "Film";
 
 	public static final String COL_ID = "id";
@@ -42,28 +42,47 @@ public class FilmORM {
 	 * @Decription: Function for Film
 	 */
 
-	public static long add(Context context) {
+	public static long add(Context context, Film film) {
 		long result = -1;
+
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 
 		try {
-			convertToContentValues(film);
-			result = mDB.insert(TABLE_NAME, null, values);
-
+			if (mDB != null) {
+				ContentValues values = convertToContentValues(film);
+				result = mDB.insert(TABLE_NAME, null, values);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("SQL_ADD_Film =>", "Failed: " + e.getStackTrace());
+		} finally {
+			if (mDB != null) {
+				mDB.close();
+			}
 		}
 
 		return result;
 	}
 
-	public static long update(Context context, int id) {
+	public static long update(Context context, Film film) {
 		long result = -1;
+
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		convertToContentValues(film);
-		result = mDB.update(TABLE_NAME, null, COL_ID + "=" + id, null);
+
+		try {
+			if (mDB != null) {
+				ContentValues values = FilmORM.convertToContentValues(film);
+				result = mDB.update(TABLE_NAME, values, FilmORM.COL_ID + " = "
+						+ film.getId(), null);
+			}
+		} catch (Exception e) {
+			Log.e("SQL_UPDATE_Film =>", "Failed: " + e.getStackTrace());
+		} finally {
+			if (mDB != null) {
+				mDB.close();
+			}
+		}
 		return result;
 	}
 
@@ -102,7 +121,7 @@ public class FilmORM {
 	}
 
 	public static Film getFilmById(Context context, int id) {
-
+		Film film = new Film();
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID
@@ -111,25 +130,28 @@ public class FilmORM {
 		if (c != null) {
 			c.moveToFirst();
 		}
-		convertToFilm(c);
+		film = convertToFilm(c);
 
 		return film;
 	}
 
 	public static ArrayList<Film> getList(Context context) {
 		ArrayList<Film> list = new ArrayList<Film>();
+
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		Cursor c = null;
-		c = mDB.query(TABLE_NAME, null, null, null, null, null, null);
-		if (c.moveToFirst()) {
-			do {
 
-				convertToFilm(c);
-				list.add(film);
-			} while (c.moveToNext());
+		if (mDB != null) {
+			Cursor c = mDB
+					.query(TABLE_NAME, null, null, null, null, null, null);
+			if (c.moveToFirst()) {
+				do {
+					Film film = convertToFilm(c);
+					list.add(film);
+				} while (c.moveToNext());
+			}
+			mDB.close();
 		}
-
 		return list;
 	}
 
@@ -138,32 +160,39 @@ public class FilmORM {
 		ArrayList<Film> list = new ArrayList<Film>();
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		Cursor c = null;
-		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE "
-				+ CategoryORM.COL_ID + " = '" + categoryId + "'";
-		c = mDB.rawQuery(sql, null);
-		if (c.moveToFirst()) {
-			do {
-				convertToFilm(c);
-				list.add(film);
-			} while (c.moveToNext());
-		}
 
+		if (mDB != null) {
+			String sql = "SELECT * FROM " + TABLE_NAME + " WHERE "
+					+ CategoryORM.COL_ID + " = " + categoryId;
+			Cursor c = mDB.rawQuery(sql, null);
+			if (c.moveToFirst()) {
+				do {
+					Film film = convertToFilm(c);
+					list.add(film);
+				} while (c.moveToNext());
+			}
+			mDB.close();
+		}
 		return list;
 	}
 
 	public static ArrayList<Film> getSearch(Context context, String filter) {
 		ArrayList<Film> list = new ArrayList<Film>();
+
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		Cursor c = null;
-		String sql = " SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME
-				+ " LIKE '%" + filter + "%'";
-		c = mDB.rawQuery(sql, null);
 
-		while (c.isAfterLast() == false) {
-			convertToFilm(c);
-			list.add(film);
+		if (mDB != null) {
+			String sql = " SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME
+					+ " LIKE '%" + filter + "%'";
+			Cursor c = mDB.rawQuery(sql, null);
+
+			while (c.isAfterLast() == false) {
+				Film film = convertToFilm(c);
+				list.add(film);
+			}
+			
+			mDB.close();
 		}
 
 		return list;
