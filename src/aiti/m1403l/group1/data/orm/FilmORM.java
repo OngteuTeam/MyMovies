@@ -1,7 +1,6 @@
 package aiti.m1403l.group1.data.orm;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Film;
