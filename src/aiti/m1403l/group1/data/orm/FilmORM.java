@@ -51,10 +51,10 @@ public class FilmORM {
 		try {
 			if (mDB != null) {
 				ContentValues values = convertToContentValues(film);
-				result = mDB.insert(TABLE_NAME, null, values);
 				for (int categoryId : film.getCategories()) {
 					FilmCategoryORM.add(context, film.getId(), categoryId);
 				}
+				result = mDB.insert(TABLE_NAME, null, values);
 			}
 		} catch (Exception e) {
 			Log.e("SQL_ADD_Film =>", "Failed: " + e.getStackTrace());
@@ -76,8 +76,15 @@ public class FilmORM {
 		try {
 			if (mDB != null) {
 				ContentValues values = FilmORM.convertToContentValues(film);
+
+				FilmCategoryORM.deleteByFilmId(context, film.getId());
+
 				result = mDB.update(TABLE_NAME, values, FilmORM.COL_ID + " = "
 						+ film.getId(), null);
+
+				for (int categoryId : film.getCategories()) {
+					FilmCategoryORM.add(context, film.getId(), categoryId);
+				}
 			}
 		} catch (Exception e) {
 			Log.e("SQL_UPDATE_Film =>", "Failed: " + e.getStackTrace());
@@ -91,9 +98,23 @@ public class FilmORM {
 
 	public static long delete(Context context, int id) {
 		long result = -1;
+
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
-		mDB.delete(TABLE_NAME, COL_ID + "=" + id, null);
+
+		try {
+			if (mDB != null) {
+				FilmCategoryORM.deleteByFilmId(context, id);
+				result = mDB.delete(TABLE_NAME, COL_ID + "=" + id, null);
+			}
+		} catch (Exception e) {
+			Log.e("SQL_DEL_Film =>", "Failed: " + e.getStackTrace());
+		} finally {
+			if (mDB != null) {
+				mDB.close();
+			}
+		}
+
 		return result;
 	}
 
@@ -194,7 +215,7 @@ public class FilmORM {
 				Film film = convertToFilm(c);
 				list.add(film);
 			}
-			
+
 			mDB.close();
 		}
 
