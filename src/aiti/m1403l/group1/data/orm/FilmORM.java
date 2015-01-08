@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Film;
-import android.R.id;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
