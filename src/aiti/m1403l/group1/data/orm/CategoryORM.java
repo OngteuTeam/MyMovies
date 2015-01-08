@@ -2,8 +2,12 @@ package aiti.m1403l.group1.data.orm;
 
 import java.util.ArrayList;
 
+import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Category;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 public class CategoryORM {
 
@@ -28,9 +32,12 @@ public class CategoryORM {
 	 * @Decription: Function for Category
 	 */
 
-	public static long addCategory() {
+	public static long addCategory(Context context) {
 		long result = -1;
-
+		
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
 		return result;
 	}
 	
@@ -41,9 +48,20 @@ public class CategoryORM {
 		 return values;
 	}
 
-	public static ArrayList<Category> getListCategory() {
+	private static Category convertToCategory(Cursor c){
+		Category cate = new Category();
+		cate.setId(c.getInt(0));
+		cate.setName(c.getString(1));
+		return cate;
+	}
+	
+	public static ArrayList<Category> getListCategory(Context context) {
 		ArrayList<Category> list = new ArrayList<Category>();
-
+		
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
+		
 		return list;
 	}
 	

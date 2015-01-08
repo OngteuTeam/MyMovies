@@ -2,8 +2,12 @@ package aiti.m1403l.group1.data.orm;
 
 import java.util.ArrayList;
 
+import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Film;
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 public class FilmORM {
 	
@@ -36,20 +40,26 @@ public class FilmORM {
 	 * @Decription: Function for Film
 	 */
 
-	public static long add() {
+	public static long add(Context context) {
 		long result = -1;
-
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
 		return result;
 	}
 
-	public static long update() {
+	public static long update(Context context) {
 		long result = -1;
-
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
 		return result;
 	}
 
-	public static long delete() {
+	public static long delete(Context context) {
 		long result = -1;
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 
 		return result;
 	}
@@ -67,27 +77,48 @@ public class FilmORM {
 		 return values;
 	}
 	
-	public static Film getFilmById(){
+	private static Film convertToFilm(Cursor c){
 		Film f = new Film();
-		
+		f.setId(c.getInt(c.getColumnIndex(COL_ID)));
+		f.setName(c.getString(c.getColumnIndex(COL_NAME)));
+		f.setYear(c.getInt(c.getColumnIndex(COL_YEAR)));
+		f.setImage(c.getString(c.getColumnIndex(COL_IMAGE)));
+		f.setYoutubeId(c.getString(c.getColumnIndex(COL_YOUTUBEID)));
+		f.setViewCount(c.getInt(c.getColumnIndex(COL_VIEW)));
+		f.setLike(c.getInt(c.getColumnIndex(COL_LIKE)));
+		f.setDuration(c.getString(c.getColumnIndex(COL_DURATION)));
+		return f;
+	}
+	
+	public static Film getFilmById(Context context){
+		Film f = new Film();
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+	    
 		return f;
 	}
 		
-	public static ArrayList<Film> getList() {
+	public static ArrayList<Film> getList(Context context) {
 		ArrayList<Film> list = new ArrayList<Film>();
-
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
 		return list;
 	}
 
-	public static ArrayList<Film> getListByCategoryId() {
+	public static ArrayList<Film> getListByCategoryId(Context context) {
 		ArrayList<Film> list = new ArrayList<Film>();
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 
 		return list;
 	}
 	
-	public static ArrayList<Film> getSearch() {
+	public static ArrayList<Film> getSearch(Context context) {
 		ArrayList<Film> list = new ArrayList<Film>();
-
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+	    SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		
 		return list;
 	}
 	
