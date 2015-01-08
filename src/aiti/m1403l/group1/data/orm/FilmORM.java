@@ -1,6 +1,7 @@
 package aiti.m1403l.group1.data.orm;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Film;
@@ -51,6 +52,9 @@ public class FilmORM {
 			if (mDB != null) {
 				ContentValues values = convertToContentValues(film);
 				result = mDB.insert(TABLE_NAME, null, values);
+				for (int categoryId : film.getCategories()) {
+					FilmCategoryORM.add(context, film.getId(), categoryId);
+				}
 			}
 		} catch (Exception e) {
 			Log.e("SQL_ADD_Film =>", "Failed: " + e.getStackTrace());
