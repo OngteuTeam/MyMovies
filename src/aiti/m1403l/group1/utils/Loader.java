@@ -12,15 +12,15 @@ public class Loader {
 		super();
 		this.context = context;
 		new DatabaseWrapper(context);
-		APIProcess.sendRequestFirstRun(context);
-		if (isFirstRun(context)) {
+		
+		MySPManager spManager = new MySPManager(context);
+		
+		if (spManager.isFirstRun()) {
+			APIProcess.sendRequestFirstRun(context);
 		} else {
+			APIProcess.sendRequestUpdate(context);
 		}
+		
 	}
 	
-	private boolean isFirstRun(Context context){
-		boolean flag = true;
-		
-		return flag;
-	}
 }

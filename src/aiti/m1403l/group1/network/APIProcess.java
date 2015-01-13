@@ -29,6 +29,7 @@ import aiti.m1403l.group1.data.orm.CategoryORM;
 import aiti.m1403l.group1.data.orm.FilmCategoryORM;
 import aiti.m1403l.group1.data.orm.FilmORM;
 import aiti.m1403l.group1.utils.Defines;
+import aiti.m1403l.group1.utils.MySPManager;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class APIProcess {
 
 		GetData gdCate = new GetData();
 		GetData gdFilm = new GetData();
+		final MySPManager spManager = new MySPManager(context);
 		
 		getCate = new GetCategory() {
 			@Override
@@ -50,6 +52,7 @@ public class APIProcess {
 				for (Category category : listCategory) {
 					CategoryORM.addCategory(context, category);
 				}
+				Log.i("INSERTED_CATEGORY ======>", "SUCCESS");
 			}
 		};
 
@@ -60,18 +63,21 @@ public class APIProcess {
 				for (Film film : listFilm) {
 					FilmORM.add(context, film);
 				}
+				spManager.setLatestTime(now);
+				Log.i("INSERTED_FILM ======>", "SUCCESS");
 			}
 		};
-
 		gdCate.execute(getPackedParameters(Defines.URL_GET_ALL_CATEGORY, null,getCate));
 		gdFilm.execute(getPackedParameters(Defines.URL_GET_ALL_FILMS, null, getFilm));
-
+		spManager.setFirstRun(false);
+		Log.i("API_1ST_RUN ========>", "Success 1st");
 	}
 
 	public static void sendRequestUpdate(final Context context) {
 
 		GetData gd = new GetData();
-
+		final MySPManager spManager = new MySPManager(context);
+		
 		getFilm = new GetFilm() {
 			@Override
 			public void success(String json) {
@@ -86,11 +92,14 @@ public class APIProcess {
 						FilmORM.delete(context, delId);
 					}
 				}
+				spManager.setLatestTime(now);
+				Log.i("UPDATED FILM ======>", "SUCCESS");
 			}
 		};
-		String url = Defines.URL_GET_UPDATE_FILMS;
+		String url = Defines.URL_GET_UPDATE_FILMS + spManager.getLatestTime();
 		gd.execute(getPackedParameters(url, null, getFilm));
-
+		Log.i("API_INSTALLED_RUN ========>", "installed run");
+		
 	}
 
 	/*
@@ -236,7 +245,7 @@ public class APIProcess {
 			objListFilm = gson.fromJson(json, ListFilm.class);
 			listFilm = objListFilm.getFilms();
 			now = objListFilm.getNow();
-			Log.e("NOW ======>", now + "");
+//			Log.e("NOW ======>", now + "");
 			listDeleted = objListFilm.getDeletedId();
 
 		}

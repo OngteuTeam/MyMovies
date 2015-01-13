@@ -13,5 +13,7 @@ public class Defines {
 	public static final String URL_GET_ALL_CATEGORY = "http://dataappmobi.com/s8/api/Services/RedditMovies/test/GetCategory";
 	public static final String URL_GET_ALL_FILMS = "http://dataappmobi.com/s8/api/Services/RedditMovies/test/AllFilms";
 	public static final String URL_GET_UPDATE_FILMS = "http://dataappmobi.com/s8/api/Services/RedditMovies/test/AllFilms?date=";
+
+	
 	
 }
