@@ -13,11 +13,12 @@ public class DatabaseWrapper extends SQLiteOpenHelper {
 
 	public DatabaseWrapper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		// TODO Auto-generated constructor stub
+		//Log.i("DW_CREATED", "DatabaseWapper was create");
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.i("DB_TAG", "CREATE SUCCESS");
 		db.execSQL(CategoryORM.SQL_CREATE_TABLE);
 		db.execSQL(FilmORM.SQL_CREATE_TABLE);
 		db.execSQL(FilmCategoryORM.SQL_CREATE_TABLE);

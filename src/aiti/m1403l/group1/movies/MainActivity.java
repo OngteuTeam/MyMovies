@@ -1,7 +1,10 @@
 package aiti.m1403l.group1.movies;
 
+import aiti.m1403l.group1.data.DatabaseWrapper;
+import aiti.m1403l.group1.utils.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,6 +14,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		Loader loader = new Loader(this);
 	}
 
 	@Override

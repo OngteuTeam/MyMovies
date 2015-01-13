@@ -1,10 +1,14 @@
 package aiti.m1403l.group1.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Category {
 	/*
 	 * Properties of LoaiSanPham
 	 */
+	@SerializedName("cateId")
 	private int id;
+	@SerializedName("cateName")
 	private String name;
 	
 	public Category() {

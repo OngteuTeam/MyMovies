@@ -1,5 +1,7 @@
 package aiti.m1403l.group1.data.model;
 
+import java.util.List;
+
 public class Film {
 
 	private int id;
@@ -10,13 +12,14 @@ public class Film {
 	private int viewCount;
 	private int like;
 	private String duration;
-	private int[] categories;
+	private List<Integer> categories;
 
 	public Film() {
 	}
 	
+	
 	public Film(int id, String name, int year, String image, String youtubeId,
-			int viewCount, int like, String duration, int[] categories) {
+			int viewCount, int like, String duration, List<Integer> categories) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -28,6 +31,7 @@ public class Film {
 		this.duration = duration;
 		this.categories = categories;
 	}
+
 
 	public int getId() {
 		return id;
@@ -93,13 +97,16 @@ public class Film {
 		this.duration = duration;
 	}
 
-	public int[] getCategories() {
+	
+	public List<Integer> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(int[] categories) {
+
+	public void setCategories(List<Integer> categories) {
 		this.categories = categories;
 	}
+
 
 	@Override
 	public String toString() {
