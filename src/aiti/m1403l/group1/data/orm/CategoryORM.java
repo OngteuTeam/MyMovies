@@ -45,7 +45,7 @@ public class CategoryORM {
 				result = mDB.insertOrThrow(TABLE_NAME, null, values);
 			}
 		} catch (Exception e) {
-			Log.e("SQL_ADD_Category =>", "Failed: " + e.getStackTrace());
+			Log.e("SQL_ADD_Category =>", "Failed: " + e.getMessage());
 		} finally {
 			if (mDB != null) {
 				mDB.close();

@@ -12,6 +12,15 @@ public class Loader {
 		super();
 		this.context = context;
 		new DatabaseWrapper(context);
-		APIProcess.sendRequest(context);
+		APIProcess.sendRequestFirstRun(context);
+		if (isFirstRun(context)) {
+		} else {
+		}
+	}
+	
+	private boolean isFirstRun(Context context){
+		boolean flag = true;
+		
+		return flag;
 	}
 }

@@ -56,7 +56,7 @@ public class FilmORM {
 				result = mDB.insert(TABLE_NAME, null, values);
 			}
 		} catch (Exception e) {
-			Log.e("SQL_ADD_Film =>", "Failed: " + e.getStackTrace());
+			Log.e("SQL_ADD_Film =>", "Failed: " + e.getMessage());
 		} finally {
 			if (mDB != null) {
 				mDB.close();

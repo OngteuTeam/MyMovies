@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 
 import aiti.m1403l.group1.data.model.Category;
 import aiti.m1403l.group1.data.model.Film;
+import aiti.m1403l.group1.data.model.ListFilm;
 import aiti.m1403l.group1.data.orm.CategoryORM;
 import aiti.m1403l.group1.data.orm.FilmCategoryORM;
 import aiti.m1403l.group1.data.orm.FilmORM;
@@ -36,12 +37,13 @@ public class APIProcess {
 
 	private static GetCategory getCate;
 	private static GetFilm getFilm;
-	
-	public static void sendRequest(final Context context) {
+
+	public static void sendRequestFirstRun(final Context context) {
+
+		GetData gdCate = new GetData();
+		GetData gdFilm = new GetData();
 		
-		GetData gd = new GetData();
-		
-		getCate = new GetCategory(){
+		getCate = new GetCategory() {
 			@Override
 			public void success(String json) {
 				super.success(json);
@@ -50,8 +52,8 @@ public class APIProcess {
 				}
 			}
 		};
-		
-		getFilm = new GetFilm(){
+
+		getFilm = new GetFilm() {
 			@Override
 			public void success(String json) {
 				super.success(json);
@@ -60,12 +62,37 @@ public class APIProcess {
 				}
 			}
 		};
-		
-		gd.execute(getPackedParameters(Defines.URL_GET_ALL_CATEGORY, null, getCate));
-		gd.execute(getPackedParameters(Defines.URL_GET_ALL_FILMS, null, getFilm));
-		
+
+		gdCate.execute(getPackedParameters(Defines.URL_GET_ALL_CATEGORY, null,getCate));
+		gdFilm.execute(getPackedParameters(Defines.URL_GET_ALL_FILMS, null, getFilm));
+
 	}
-	
+
+	public static void sendRequestUpdate(final Context context) {
+
+		GetData gd = new GetData();
+
+		getFilm = new GetFilm() {
+			@Override
+			public void success(String json) {
+				super.success(json);
+				if (!listFilm.isEmpty()) {
+					for (Film film : listFilm) {
+						FilmORM.add(context, film);
+					}
+				}
+				if (!listDeleted.isEmpty()) {
+					for (int delId : listDeleted) {
+						FilmORM.delete(context, delId);
+					}
+				}
+			}
+		};
+		String url = Defines.URL_GET_UPDATE_FILMS;
+		gd.execute(getPackedParameters(url, null, getFilm));
+
+	}
+
 	/*
 	 * Bundles any additional parameters you want to pass to the server with the
 	 * authentication parameters. Also adds the required RESTResponse callback
@@ -195,24 +222,30 @@ public class APIProcess {
 
 	public static class GetFilm implements IResponse {
 
+		private ListFilm objListFilm = null;
 		protected List<Film> listFilm = null;
+		protected List<Integer> listDeleted = null;
+		protected int now = 0;
 
 		@Override
 		public void success(String json) {
 			GsonBuilder gsonBuilder = new GsonBuilder();
 			gsonBuilder.setDateFormat("M/d/yy hh:mm a");
 			Gson gson = gsonBuilder.create();
-			//JsonParser parser = new JsonParser();
-		    //int now = Integer.parseInt(parser.parse(json).getAsJsonObject().get("now").getAsString());
-		    //Log.i("Now Update ======>", now +"");
-			//listFilm = Arrays.asList(gson.fromJson(parser.parse(json).getAsJsonObject().get("listFilm").getAsJsonArray(), Film[].class));
+
+			objListFilm = gson.fromJson(json, ListFilm.class);
+			listFilm = objListFilm.getFilms();
+			now = objListFilm.getNow();
+			Log.e("NOW ======>", now + "");
+			listDeleted = objListFilm.getDeletedId();
+
 		}
 
 		@Override
 		public void fail(Exception ex) {
-
+			Log.e("GET_LIST_FILM ====>", "Get list fail :/ " + ex.getMessage());
 		}
 
 	}
-	
+
 }
