@@ -69,21 +69,22 @@ public class CategoryORM {
 		return cate;
 	}
 
-	public static Category getCategoryById(Context context, int id){
+	public static Category getCategoryById(Context context, int id) {
 		Category cate = new Category();
-		
+
 		DatabaseWrapper dw = new DatabaseWrapper(context);
 		SQLiteDatabase mDB = dw.getWritableDatabase();
-		
+
 		if (mDB != null) {
-			Cursor c = mDB.rawQuery("SELECT * FROM " + CategoryORM.TABLE_NAME + " WHERE " + CategoryORM. COL_ID + " = " + id, null);
+			Cursor c = mDB.rawQuery("SELECT * FROM " + CategoryORM.TABLE_NAME
+					+ " WHERE " + CategoryORM.COL_ID + " = " + id, null);
 			c.moveToFirst();
 			cate = CategoryORM.convertToCategory(c);
 			mDB.close();
 		}
 		return cate;
 	}
-	
+
 	public static ArrayList<Category> getListCategory(Context context) {
 		ArrayList<Category> list = new ArrayList<Category>();
 
@@ -91,7 +92,8 @@ public class CategoryORM {
 		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
 
 		if (mDB != null) {
-			Cursor c = mDB.query(TABLE_NAME, null, null, null, null, null, null);
+			Cursor c = mDB
+					.query(TABLE_NAME, null, null, null, null, null, null);
 			if (c.moveToFirst()) {
 				do {
 					Category category = convertToCategory(c);
@@ -100,7 +102,7 @@ public class CategoryORM {
 			}
 			mDB.close();
 		}
-		
+
 		return list;
 	}
 
