@@ -6,18 +6,19 @@ public class Category {
 	/*
 	 * Properties of LoaiSanPham
 	 */
-	@SerializedName("cateId")
+	
 	private int id;
-	@SerializedName("cateName")
 	private String name;
+	private String image;
 	
 	public Category() {
 	}
 
-	public Category(int id, String name) {
+	public Category(int id, String name, String image) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.image = image;
 	}
 
 	public int getId() {
@@ -34,6 +35,14 @@ public class Category {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 	
 	@Override

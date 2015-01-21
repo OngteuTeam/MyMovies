@@ -16,12 +16,13 @@ public class CategoryORM {
 
 	public static final String COL_ID = "id";
 	public static final String COL_NAME = "name";
+	public static final String COL_IMG = "image";
 
 	/*
 	 * SQL CREATE TABLE
 	 */
 	public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
-			+ " (" + COL_ID + " INTEGER PRIMARY KEY, " + COL_NAME + " TEXT);";
+			+ " (" + COL_ID + " INTEGER PRIMARY KEY, " + COL_NAME + " TEXT," + COL_IMG + " TEXT);";
 	/*
 	 * SQL DROP TABLE
 	 */
@@ -59,6 +60,7 @@ public class CategoryORM {
 		ContentValues values = new ContentValues();
 		values.put(CategoryORM.COL_ID, category.getId());
 		values.put(CategoryORM.COL_NAME, category.getName());
+		values.put(CategoryORM.COL_IMG, category.getImage());
 		return values;
 	}
 
@@ -66,6 +68,7 @@ public class CategoryORM {
 		Category cate = new Category();
 		cate.setId(c.getInt(c.getColumnIndex(COL_ID)));
 		cate.setName(c.getString(c.getColumnIndex(COL_NAME)));
+		cate.setImage(c.getString(c.getColumnIndex(COL_IMG)));
 		return cate;
 	}
 
