@@ -67,7 +67,7 @@ public class FilmORM {
 		return result;
 	}
 
-	public static long update(Context context, Film film) {
+	public static long update(Context context, Film film, int flagBookmark) {
 		long result = -1;
 
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
@@ -75,7 +75,7 @@ public class FilmORM {
 
 		try {
 			if (mDB != null) {
-				ContentValues values = FilmORM.convertToContentValues(film, 0);
+				ContentValues values = FilmORM.convertToContentValues(film, flagBookmark);
 
 				FilmCategoryORM.deleteByFilmId(context, film.getId());
 

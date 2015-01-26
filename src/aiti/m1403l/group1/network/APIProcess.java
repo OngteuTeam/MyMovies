@@ -85,7 +85,8 @@ public class APIProcess {
 				if (!listFilm.isEmpty()) {
 					for (Film film : listFilm) {
 						if (FilmORM.isExisting(context, film.getId())) {
-							FilmORM.update(context, film);
+							Film f = FilmORM.getFilmById(context, film.getId());
+							FilmORM.update(context, film, f.getBookmark());
 						} else {
 							FilmORM.add(context, film);
 						}
