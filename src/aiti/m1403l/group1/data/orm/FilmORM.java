@@ -22,6 +22,7 @@ public class FilmORM {
 	public static final String COL_VIEW = "view_count";
 	public static final String COL_LIKE = "like";
 	public static final String COL_DURATION = "duration";
+	public static final String COL_MARK = "is_bookmark";
 
 	/*
 	 * SQL CREATE TABLE
@@ -30,7 +31,7 @@ public class FilmORM {
 			+ " (" + COL_ID + " INTEGER PRIMARY KEY, " + COL_NAME + " TEXT, "
 			+ COL_YEAR + " INTEGER, " + COL_IMAGE + " TEXT, " + COL_YOUTUBEID
 			+ " TEXT, " + COL_VIEW + " INTEGER, " + COL_LIKE + " INTEGER, "
-			+ COL_DURATION + " TEXT);";
+			+ COL_DURATION + " TEXT, " + COL_MARK + " INTEGER);";
 	/*
 	 * SQL DROP TABLE
 	 */
@@ -49,7 +50,7 @@ public class FilmORM {
 
 		try {
 			if (mDB != null) {
-				ContentValues values = convertToContentValues(film);
+				ContentValues values = convertToContentValues(film, 0);
 				for (int categoryId : film.getCategories()) {
 					FilmCategoryORM.add(context, film.getId(), categoryId);
 				}
@@ -74,7 +75,7 @@ public class FilmORM {
 
 		try {
 			if (mDB != null) {
-				ContentValues values = FilmORM.convertToContentValues(film);
+				ContentValues values = FilmORM.convertToContentValues(film, 0);
 
 				FilmCategoryORM.deleteByFilmId(context, film.getId());
 
@@ -84,6 +85,27 @@ public class FilmORM {
 				for (int categoryId : film.getCategories()) {
 					FilmCategoryORM.add(context, film.getId(), categoryId);
 				}
+			}
+		} catch (Exception e) {
+			Log.e("SQL_UPDATE_Film =>", "Failed: " + e.getStackTrace());
+		} finally {
+			if (mDB != null) {
+				mDB.close();
+			}
+		}
+		return result;
+	}
+
+	public static long updateBookmark(Context context, int filmId, int flag) {
+		long result = -1;
+
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+
+		try {
+			if (mDB != null) {
+				ContentValues values = FilmORM.convertToContentValues(FilmORM.getFilmById(context, filmId), flag);
+				result = mDB.update(TABLE_NAME, values, FilmORM.COL_ID + " = " + filmId + "", null);
 			}
 		} catch (Exception e) {
 			Log.e("SQL_UPDATE_Film =>", "Failed: " + e.getStackTrace());
@@ -117,7 +139,7 @@ public class FilmORM {
 		return result;
 	}
 
-	private static ContentValues convertToContentValues(Film film) {
+	private static ContentValues convertToContentValues(Film film, int bookmark) {
 		ContentValues values = new ContentValues();
 		values.put(FilmORM.COL_ID, film.getId());
 		values.put(FilmORM.COL_NAME, film.getName());
@@ -127,6 +149,7 @@ public class FilmORM {
 		values.put(FilmORM.COL_VIEW, film.getViewCount());
 		values.put(FilmORM.COL_LIKE, film.getLike());
 		values.put(FilmORM.COL_DURATION, film.getDuration());
+		values.put(FilmORM.COL_MARK, bookmark);
 		return values;
 	}
 
@@ -143,10 +166,24 @@ public class FilmORM {
 		return f;
 	}
 
+	public static boolean isExisting(Context context, int id) {
+		boolean isExisting = false;
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+		SQLiteDatabase mDB = databaseWrapper.getReadableDatabase();
+
+		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID
+				+ " = '" + id + "'";
+		Cursor c = mDB.rawQuery(sql, null);
+		if (c.getCount() > 0) {
+			isExisting = true;
+		}
+		return isExisting;
+	}
+
 	public static Film getFilmById(Context context, int id) {
 		Film film = new Film();
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
-		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		SQLiteDatabase mDB = databaseWrapper.getReadableDatabase();
 		String sql = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_ID
 				+ " = '" + id + "'";
 		Cursor c = mDB.rawQuery(sql, null);
@@ -162,7 +199,7 @@ public class FilmORM {
 		ArrayList<Film> list = new ArrayList<Film>();
 
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
-		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		SQLiteDatabase mDB = databaseWrapper.getReadableDatabase();
 
 		if (mDB != null) {
 			Cursor c = mDB
@@ -178,11 +215,33 @@ public class FilmORM {
 		return list;
 	}
 
+	public static ArrayList<Film> getListBookmark(Context context) {
+		ArrayList<Film> list = new ArrayList<Film>();
+
+		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
+		SQLiteDatabase mDB = databaseWrapper.getReadableDatabase();
+
+		if (mDB != null) {
+			String selection = FilmORM.COL_MARK + "= ?";
+			String[] selectionArgs = new String[] { String.valueOf(1) };
+			Cursor c = mDB
+					.query(TABLE_NAME, null, selection, selectionArgs, null, null, null);
+			if (c.moveToFirst()) {
+				do {
+					Film film = convertToFilm(c);
+					list.add(film);
+				} while (c.moveToNext());
+			}
+			mDB.close();
+		}
+		return list;
+	}
+	
 	public static ArrayList<Film> getListByCategoryId(Context context,
 			int categoryId) {
 		ArrayList<Film> list = new ArrayList<Film>();
 		DatabaseWrapper databaseWrapper = new DatabaseWrapper(context);
-		SQLiteDatabase mDB = databaseWrapper.getWritableDatabase();
+		SQLiteDatabase mDB = databaseWrapper.getReadableDatabase();
 
 		if (mDB != null) {
 			String sql = "SELECT * FROM " + TABLE_NAME + " WHERE "

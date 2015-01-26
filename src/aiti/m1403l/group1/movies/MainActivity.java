@@ -1,9 +1,11 @@
 package aiti.m1403l.group1.movies;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import aiti.m1403l.group1.data.DatabaseWrapper;
 import aiti.m1403l.group1.data.model.Film;
+import aiti.m1403l.group1.data.orm.FilmORM;
 import aiti.m1403l.group1.utils.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Loader loader = new Loader(this);
+		
+		ArrayList<Film> arrList = FilmORM.getList(this);
 		
 		
 	}

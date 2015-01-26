@@ -16,6 +16,7 @@ public class Film {
 	private String duration;
 	@SerializedName("category")
 	private List<Integer> categories;
+	private boolean bookmark;
 
 	public Film() {
 	}	
@@ -32,8 +33,24 @@ public class Film {
 		this.like = like;
 		this.duration = duration;
 		this.categories = categories;
+		this.bookmark = false;
 	}
-
+	
+	public Film(int id, String name, int year, String image, String youtubeId,
+			int viewCount, int like, String duration, List<Integer> categories,
+			boolean bookmark) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.year = year;
+		this.image = image;
+		this.youtubeId = youtubeId;
+		this.viewCount = viewCount;
+		this.like = like;
+		this.duration = duration;
+		this.categories = categories;
+		this.bookmark = bookmark;
+	}
 
 	public int getId() {
 		return id;
@@ -109,6 +126,13 @@ public class Film {
 		this.categories = categories;
 	}
 
+	public boolean isBookmark() {
+		return bookmark;
+	}
+
+	public void setBookmark(boolean bookmark) {
+		this.bookmark = bookmark;
+	}
 
 	@Override
 	public String toString() {

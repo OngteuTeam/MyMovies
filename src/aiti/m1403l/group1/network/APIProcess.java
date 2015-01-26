@@ -84,7 +84,11 @@ public class APIProcess {
 				super.success(json);
 				if (!listFilm.isEmpty()) {
 					for (Film film : listFilm) {
-						FilmORM.add(context, film);
+						if (FilmORM.isExisting(context, film.getId())) {
+							FilmORM.update(context, film);
+						} else {
+							FilmORM.add(context, film);
+						}
 					}
 				}
 				if (!listDeleted.isEmpty()) {
